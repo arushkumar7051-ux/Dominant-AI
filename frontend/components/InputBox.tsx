@@ -10,7 +10,7 @@ interface Message {
 
 interface InputBoxProps {
   messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  setMessages: (newMessages: Message[]) => void;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -28,38 +28,32 @@ export default function InputBox({
 
     if (!currentMessage || loading) return;
 
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: "user",
-        text: currentMessage,
-      },
-    ]);
+    const userMessage: Message = {
+      role: "user",
+      text: currentMessage,
+    };
 
+    const updatedMessages = [...messages, userMessage];
+
+    setMessages(updatedMessages);
     setMessage("");
     setLoading(true);
 
     try {
-      const result = await sendMessage([
-  ...messages,
-  {
-    role: "user",
-    text: currentMessage,
-  },
-]);
+      const result = await sendMessage(updatedMessages);
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          text: result.reply,
-        },
-      ]);
+      const aiMessage: Message = {
+        role: "assistant",
+        text: result.reply,
+      };
+
+      // This saves the reply into the same chat.
+      setMessages([...updatedMessages, aiMessage]);
     } catch (error) {
       console.error(error);
 
-      setMessages((prev) => [
-        ...prev,
+      setMessages([
+        ...updatedMessages,
         {
           role: "assistant",
           text: "Failed to connect to Dominant AI backend.",
@@ -76,9 +70,7 @@ export default function InputBox({
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            handleSend();
-          }
+          if (e.key === "Enter") handleSend();
         }}
         disabled={loading}
         className="flex-1 bg-zinc-900 rounded-lg p-3 text-white outline-none disabled:opacity-50"
