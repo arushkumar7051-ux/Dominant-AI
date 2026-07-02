@@ -10,18 +10,24 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+    "http://localhost:3000",
+    "https://dominant-ai.vercel.app/",
+],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+
 class Message(BaseModel):
     role: str
     text: str
 
+
 class ChatRequest(BaseModel):
     messages: list[Message]
+
 
 @app.get("/")
 def home():
@@ -29,6 +35,7 @@ def home():
         "name": "Dominant AI",
         "status": "Online"
     }
+
 
 @app.post("/chat")
 def chat(request: ChatRequest):

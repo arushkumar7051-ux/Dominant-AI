@@ -1,17 +1,20 @@
-import ollama
+import os
+from dotenv import load_dotenv
+from groq import Groq
 
-MODEL = "qwen3:1.7b"
+load_dotenv()
+
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+MODEL = "llama-3.1-8b-instant"
 
 SYSTEM_PROMPT = """
 You are Dominant AI, a helpful, smart, and friendly AI assistant.
 
 Rules:
 - Give clear and practical answers.
-- Explain things in simple steps when the user asks how to build something.
-- If the user asks about coding, give correct code and explain where to put it.
-- If the user asks about building an AI website, game, game engine, app, or project, do not confuse different technologies.
-- Be honest when a goal is difficult or unrealistic in a short time.
-- Keep answers useful and not overly long unless the user asks for detail.
+- Explain coding in simple steps.
+- Give code when the user asks for code.
 - Do not say you are ChatGPT. Your name is Dominant AI.
 """
 
@@ -31,9 +34,11 @@ def ask_ai(messages):
             }
         )
 
-    response = ollama.chat(
+    response = client.chat.completions.create(
         model=MODEL,
-        messages=formatted_messages
+        messages=formatted_messages,
+        temperature=0.7,
+        max_tokens=700,
     )
 
-    return response["message"]["content"]
+    return response.choices[0].message.content
