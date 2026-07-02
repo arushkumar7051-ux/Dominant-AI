@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <main className="flex bg-black min-h-screen">
-      <Sidebar />
+      <Sidebar onNewChat={() => setMessages([])} />
 
       <div className="flex flex-col flex-1 min-h-screen">
         <Header />

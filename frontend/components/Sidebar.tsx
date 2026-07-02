@@ -1,11 +1,18 @@
-export default function Sidebar() {
+interface SidebarProps {
+  onNewChat: () => void;
+}
+
+export default function Sidebar({ onNewChat }: SidebarProps) {
   return (
     <div className="w-64 h-screen bg-zinc-900 border-r border-zinc-800 p-5">
       <h1 className="text-2xl font-bold text-white mb-8">
         🤖 Dominant AI
       </h1>
 
-      <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg mb-6">
+      <button
+        onClick={onNewChat}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg mb-6"
+      >
         + New Chat
       </button>
 
