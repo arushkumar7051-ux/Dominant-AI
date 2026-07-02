@@ -1,17 +1,34 @@
+"use client";
+
+import { useState } from "react";
+
+import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
+import Chat from "../components/Chat";
+import InputBox from "../components/InputBox";
+
 export default function Home() {
+  const [messages, setMessages] = useState<
+    { role: string; text: string }[]
+  >([]);
+
+  const [loading, setLoading] = useState(false);
+
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
-      <h1 className="text-6xl font-bold mb-6">
-        🤖 Dominant AI
-      </h1>
+    <main className="flex bg-black min-h-screen">
+      <Sidebar />
 
-      <p className="text-gray-400 text-xl mb-10">
-        Your Own AI Platform
-      </p>
+      <div className="flex flex-col flex-1 min-h-screen">
+        <Header />
 
-      <button className="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-xl text-lg">
-        Start Chatting
-      </button>
+        <Chat messages={messages} loading={loading} />
+
+        <InputBox
+          messages={messages}
+          setMessages={setMessages}
+          setLoading={setLoading}
+        />
+      </div>
     </main>
   );
 }
