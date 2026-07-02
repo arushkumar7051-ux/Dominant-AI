@@ -11,12 +11,14 @@ interface Message {
 interface InputBoxProps {
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function InputBox({
   messages,
   setMessages,
+  loading,
   setLoading,
 }: InputBoxProps) {
   const [message, setMessage] = useState("");
@@ -24,7 +26,7 @@ export default function InputBox({
   async function handleSend() {
     const currentMessage = message.trim();
 
-    if (!currentMessage) return;
+    if (!currentMessage || loading) return;
 
     setMessages((prev) => [
       ...prev,
@@ -38,7 +40,13 @@ export default function InputBox({
     setLoading(true);
 
     try {
-      const result = await sendMessage(currentMessage);
+      const result = await sendMessage([
+  ...messages,
+  {
+    role: "user",
+    text: currentMessage,
+  },
+]);
 
       setMessages((prev) => [
         ...prev,
@@ -72,16 +80,21 @@ export default function InputBox({
             handleSend();
           }
         }}
-        disabled={false}
-        className="flex-1 bg-zinc-900 rounded-lg p-3 text-white outline-none"
-        placeholder="Ask Dominant AI..."
+        disabled={loading}
+        className="flex-1 bg-zinc-900 rounded-lg p-3 text-white outline-none disabled:opacity-50"
+        placeholder={
+          loading
+            ? "Dominant AI is thinking..."
+            : "Ask Dominant AI..."
+        }
       />
 
       <button
         onClick={handleSend}
-        className="bg-blue-600 hover:bg-blue-700 px-6 rounded-lg text-white"
+        disabled={loading}
+        className="bg-blue-600 hover:bg-blue-700 px-6 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Send
+        {loading ? "Thinking..." : "Send"}
       </button>
     </div>
   );

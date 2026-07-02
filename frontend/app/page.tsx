@@ -23,11 +23,13 @@ export default function Home() {
 
         <Chat messages={messages} loading={loading} />
 
-        <InputBox
-          messages={messages}
-          setMessages={setMessages}
-          setLoading={setLoading}
-        />
+      <InputBox
+  messages={messages}
+  setMessages={setMessages}
+  loading={loading}
+  setLoading={setLoading}
+/>
+    
       </div>
     </main>
   );

@@ -16,19 +16,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class Message(BaseModel):
+    role: str
+    text: str
+
 class ChatRequest(BaseModel):
-    message: str
+    messages: list[Message]
 
 @app.get("/")
 def home():
     return {
         "name": "Dominant AI",
-        "status": "Online 🚀"
+        "status": "Online"
     }
 
 @app.post("/chat")
 def chat(request: ChatRequest):
-    reply = ask_ai(request.message)
+    reply = ask_ai(request.messages)
 
     return {
         "reply": reply
